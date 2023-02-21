@@ -31,10 +31,35 @@ void line(Vec2i p0, Vec2i p1, TGAImage &image, TGAColor color) {
     }
 }
 
+void solid_angle(Vec2i t0, Vec2i t1, Vec2i t2, Vec2i t3, TGAImage &image, TGAColor color) {
+   if(t0.y == t1.y)
+   {
+      if(t0.x > t1.x) std::swap(t0,t1);
+      for(int x = t0.x; x < t1.x; ++x)
+         image.set(x,t0.y,color);
+   }
+
+   for(int y = t0.y; y <= t1.y; ++y)
+   {
+      float t01 = ( y - t0.y ) / float( t1.y - t0.y );
+      int x01 = t0.x + t01 * (t1.x - t0.x);
+
+      float t23 = ( y - t2.y ) / float( t3.y - t2.y );
+      int x23 = t2.x + t23 * (t3.x - t2.x);
+
+      if(x23 < x01) std::swap(x01,x23);
+      for(int x = x01; x <= x23; ++x)
+         image.set(x,y,color);
+   }
+}
+
 void triangle(Vec2i t0, Vec2i t1, Vec2i t2, TGAImage &image, TGAColor color) {
-    line(t0, t1, image, color);
-    line(t1, t2, image, color);
-    line(t2, t0, image, color);
+   if(t1.y < t0.y) std::swap(t0,t1);
+   if(t2.y < t0.y) std::swap(t0,t2);
+   if(t2.y < t1.y) std::swap(t1,t2);
+
+   solid_angle(t0, t1, t0, t2, image, color);
+   solid_angle(t1, t2, t0, t2, image, color);
 }
 
 int main(int argc, char** argv) {
