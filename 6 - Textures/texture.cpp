@@ -1,22 +1,45 @@
 #include <vector>
+#include <string>
 #include <array>
 #include <cmath>
-#include <string>
 #include "tgaimage.h"
 #include "model.h"
 #include "geometry.h"
 
-
 using namespace std;
 
-std::array<Vec2i,2> boite_englobante(const TGAImage& image, Vec3f* t, int n = 3 ) {
-    std::array<Vec2i,2> box { Vec2i{image.get_width()-1, image.get_height()-1} , Vec2i{0,0} };
-    for(int i = 0; i < n; ++i) {
-        if ( t[i].x < box[0].x ) box[0].x = t[i].x;
-        if ( t[i].y < box[0].y ) box[0].y = t[i].y;
-        if ( t[i].x > box[1].x ) box[1].x = t[i].x;
-        if ( t[i].y > box[1].y ) box[1].y = t[i].y;
+const int width  = 800;
+const int height = 800;
+
+template<class Vec, typename Comp>
+void compare_coordinates(Vec2i& p1, const Vec& p2, Comp compare) {
+    if(compare(p2.x,p1.x)) p1.x = p2.x;
+    if(compare(p2.y,p1.y)) p1.y = p2.y;
+}
+template<class Vec>
+void smallest_coordinates(Vec2i& p1, const Vec& p2) {
+    compare_coordinates(p1,p2,less<int>());
+}
+template<class Vec>
+void largest_coordinates(Vec2i& p1, const Vec& p2) {
+    compare_coordinates(p1,p2,greater<int>());
+}
+std::array<Vec2i,2> boite_englobante(const TGAImage& image, Vec3f* t, int n = 3 )
+{
+    Vec2i t0 (t[0].x, t[0].y );
+    std::array<Vec2i,2> box { t0, t0 } ;
+    for(int i = 1; i < n; ++i) {
+        smallest_coordinates(box[0],t[i]);
+        largest_coordinates(box[1],t[i]);
     }
+
+    const Vec2i imageMin { 0, 0 };
+    const Vec2i imageMax { image.get_width()-1, image.get_height() - 1 };
+    for(int i = 0; i < 2; ++i) {
+        largest_coordinates(box[i], imageMin);
+        smallest_coordinates(box[i], imageMax);
+    }
+
     return box;
 }
 
@@ -39,7 +62,7 @@ bool est_dans_le_triangle(Vec3f* t, Vec3f pt) {
     return ( b.x >= 0 and b.y >= 0 and b.z >= 0 );
 }
 
-void triangle(Vec3f *t, float* zbuffer, TGAImage &image, TGAColor color) {
+void triangle(Vec3f *t, Vec3f* tc, float* zbuffer, TGAImage &image, TGAImage &texture, float intensity) {
     auto bbox = boite_englobante(image, t);
     for(int y = bbox[0].y; y <= bbox[1].y; ++y) {
         for(int x = bbox[0].x; x <= bbox[1].x; ++x) {
@@ -49,7 +72,13 @@ void triangle(Vec3f *t, float* zbuffer, TGAImage &image, TGAColor color) {
                 p.z = b.x*t[0].z + b.y*t[1].z + b.z*t[2].z;
                 if(zbuffer[x + image.get_width() * y] < p.z) {
                     zbuffer[x + image.get_width() * y] = p.z;
-                    image.set(p.x,p.y,color);
+
+                    Vec3f ptc = tc[0]*b.x + tc[1]*b.y + tc[2]*b.z;
+                    Vec2i pc ( ptc.x * texture.get_width() , ptc.y * texture.get_height() );
+                    TGAColor color = texture.get(pc.x, pc.y);
+                    for(int i = 0; i < 3; ++i) color.raw[i] *= intensity;
+
+                    image.set(x,y,color);
                 }
             }
 
@@ -59,29 +88,32 @@ void triangle(Vec3f *t, float* zbuffer, TGAImage &image, TGAColor color) {
 
 int main(int argc, char** argv) {
 
-    const int width  = 800;
-    const int height = 800;
-
-    string modelFileName = "../african_head.obj";
+    string modelFileName = "../../obj/african_head.obj";
     Model model(modelFileName.c_str());
+
+    string textureFileName = "../../obj/african_head_diffuse.tga";
+    TGAImage texture;
+    texture.read_tga_file(textureFileName.c_str());
+    texture.flip_vertically();
 
     const Vec3f light(0,0,-1);
 
     TGAImage image(width, height, TGAImage::RGB);
+
     float zbuffer[width*height];
     for(unsigned i = 0; i < width*height; ++i)
         zbuffer[i] = std::numeric_limits<float>::lowest();
 
     for (int i=0; i<model.nfaces(); i++) {
-        std::vector<int> face = model.face(i);
-
         Vec3f screen[3];
         Vec3f world[3];
+        Vec3f text[3];
 
         for (int j=0; j<3; j++) {
-            world[j] = model.vert(face[j]);
+            world[j] = model.vert(model.face(i)[j]);
             screen[j] = Vec3f((world[j] .x + 1.) * width / 2.,
-                              (world[j].y+1.)*height/2., world[j].z);
+                    (world[j].y+1.)*height/2., world[j].z);
+            text[j] = model.texture(model.face_texts(i)[j]);
         }
 
         Vec3f n = (world[2]-world[0])^(world[1]-world[0]);
@@ -89,8 +121,7 @@ int main(int argc, char** argv) {
         float I = n * light;
 
         if(I>=0) {
-            TGAColor color(I * 255, I * 255, I * 255, 255);
-            triangle(screen, zbuffer, image, color);
+            triangle(screen, text, zbuffer, image, texture, I);
         }
     }
 
