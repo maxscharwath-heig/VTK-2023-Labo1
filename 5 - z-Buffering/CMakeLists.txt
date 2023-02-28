@@ -5,9 +5,7 @@ set(CMAKE_CXX_STANDARD 11)
 
 include_directories(.)
 
-add_executable(RandomHead
-        random_head.cpp
+add_executable(Zbuffering
+        zbuffering.cpp
         model.cpp
         tgaimage.cpp)
-
-add_executable(FlatShading flat_shading.cpp model.cpp tgaimage.cpp)
