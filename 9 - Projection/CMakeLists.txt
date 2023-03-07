@@ -9,3 +9,8 @@ add_executable(Projection
         projection.cpp
         model.cpp
         tgaimage.cpp)
+
+add_executable(Projection_solution
+        projection_solution.cpp
+        model.cpp
+        tgaimage.cpp)
