@@ -9,3 +9,8 @@ add_executable(Viewport
         viewport.cpp
         model.cpp
         tgaimage.cpp)
+
+add_executable(Viewport_solution
+        viewport_solution.cpp
+        model.cpp
+        tgaimage.cpp)
