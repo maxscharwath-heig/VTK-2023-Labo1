@@ -62,7 +62,7 @@ bool est_dans_le_triangle(Vec3f* t, Vec3f pt) {
     return ( b.x >= 0 and b.y >= 0 and b.z >= 0 );
 }
 
-void triangle(Vec3f *t, Vec3f* tc, float* zbuffer, TGAImage &image, TGAImage &texture, float intensity) {
+void triangle(Vec3f t[3], Vec3f tc[3], float* zbuffer, TGAImage &image, TGAImage &texture, Vec3f intensity) {
     auto bbox = boite_englobante(image, t);
     for(int y = bbox[0].y; y <= bbox[1].y; ++y) {
         for(int x = bbox[0].x; x <= bbox[1].x; ++x) {
@@ -76,9 +76,13 @@ void triangle(Vec3f *t, Vec3f* tc, float* zbuffer, TGAImage &image, TGAImage &te
                     Vec3f ptc = tc[0]*b.x + tc[1]*b.y + tc[2]*b.z;
                     Vec2i pc ( ptc.x * texture.get_width() , ptc.y * texture.get_height() );
                     TGAColor color = texture.get(pc.x, pc.y);
-                    for(int i = 0; i < 3; ++i) color.raw[i] *= intensity;
 
-                    image.set(x,y,color);
+                    float gouraud = intensity * b;
+                    if(gouraud < 0) gouraud = 0;
+
+                    for(int i = 0; i < 3; ++i) color.raw[i] *= gouraud;
+
+                    image.set(p.x,p.y,color);
                 }
             }
 
@@ -89,9 +93,9 @@ void triangle(Vec3f *t, Vec3f* tc, float* zbuffer, TGAImage &image, TGAImage &te
 int main(int argc, char** argv) {
 
     string modelFileName = "../../obj/african_head.obj";
-    Model model(modelFileName.c_str());
-
     string textureFileName = "../../obj/african_head_diffuse.tga";
+
+    Model model(modelFileName.c_str());
     TGAImage texture;
     texture.read_tga_file(textureFileName.c_str());
     texture.flip_vertically();
@@ -99,7 +103,6 @@ int main(int argc, char** argv) {
     const Vec3f light(0,0,-1);
 
     TGAImage image(width, height, TGAImage::RGB);
-
     float zbuffer[width*height];
     for(unsigned i = 0; i < width*height; ++i)
         zbuffer[i] = std::numeric_limits<float>::lowest();
@@ -108,21 +111,21 @@ int main(int argc, char** argv) {
         Vec3f screen[3];
         Vec3f world[3];
         Vec3f text[3];
+        Vec3f intensity;
 
         for (int j=0; j<3; j++) {
             world[j] = model.vert(model.face(i)[j]);
             screen[j] = Vec3f((world[j] .x + 1.) * width / 2.,
                     (world[j].y+1.)*height/2., world[j].z);
             text[j] = model.texture(model.face_texts(i)[j]);
+            Vec3f n = model.normal(model.face_normals(i)[j]) * -1;
+            intensity.raw[j] = n * light;
         }
 
-        Vec3f n = (world[2]-world[0])^(world[1]-world[0]);
-        n.normalize();
-        float I = n * light;
-
-        if(I>=0) {
-            triangle(screen, text, zbuffer, image, texture, I);
-        }
+        Vec3f n = (world[2]-world[0])^(world[1]-world[0]); // normal to face, used for backface culling
+     //   if(n * light>=0) {
+            triangle(screen, text, zbuffer, image, texture, intensity);
+     //   }
     }
 
     image.flip_vertically(); // i want to have the origin at the left bottom corner of the image

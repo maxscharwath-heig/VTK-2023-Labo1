@@ -9,3 +9,8 @@ add_executable(Gouraud
         gouraud.cpp
         model.cpp
         tgaimage.cpp)
+
+add_executable(Gouraud_No_Texture
+        gouraud_notext.cpp
+        model.cpp
+        tgaimage.cpp)
