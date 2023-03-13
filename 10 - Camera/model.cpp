@@ -62,27 +62,27 @@ int Model::nfaces() const {
     return (int)faces_.size();
 }
 
-const std::vector<int>& Model::face(int idx) const {
+const std::vector<int>& Model::face(size_t idx) const {
     return faces_[idx];
 }
 
-const std::vector<int>& Model::face_texts(int idx) const {
+const std::vector<int>& Model::face_texts(size_t idx) const {
     return face_texts_[idx];
 }
 
-const std::vector<int>& Model::face_normals(int idx) const {
+const std::vector<int>& Model::face_normals(size_t idx) const {
     return face_norms_[idx];
 }
 
-const Vec3f& Model::vert(int i) const {
+const Vec3f& Model::vert(size_t i) const {
     return verts_[i];
 }
 
-const Vec3f& Model::texture(int i) const {
+const Vec3f& Model::texture(size_t i) const {
     return texts_[i];
 }
 
-const Vec3f& Model::normal(int i) const {
+const Vec3f& Model::normal(size_t i) const {
     return norms_[i];
 }
 
