@@ -17,12 +17,12 @@ public:
 	~Model();
 	int nverts() const;
 	int nfaces() const;
-    const Vec3f& vert(int i) const;
-    const Vec3f& texture(int i) const;
-    const Vec3f& normal(int i) const;
-    const std::vector<int>& face(int idx) const;
-    const std::vector<int>& face_texts(int idx) const;
-    const std::vector<int>& face_normals(int idx) const;
+    const Vec3f& vert(size_t i) const;
+    const Vec3f& texture(size_t i) const;
+    const Vec3f& normal(size_t i) const;
+    const std::vector<int>& face(size_t idx) const;
+    const std::vector<int>& face_texts(size_t idx) const;
+    const std::vector<int>& face_normals(size_t idx) const;
 };
 
 #endif //__MODEL_H__
