@@ -20,10 +20,10 @@ using namespace std;
 
 int main() {
 
-   string modelFileName = "../../obj/african_head.obj";
+   string modelFileName = "../../../ocuisenaire-CPP-Renderer-2023/obj/african_head.obj";
    Model model(modelFileName.c_str());
 
-   string textureFileName = "../../obj/african_head_diffuse.tga";
+   string textureFileName = "../../../ocuisenaire-CPP-Renderer-2023/obj/african_head_diffuse.tga";
    TGAImage texture;
    texture.read_tga_file(textureFileName.c_str());
    texture.flip_vertically();
