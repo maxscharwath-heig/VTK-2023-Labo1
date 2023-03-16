@@ -16,4 +16,5 @@ add_executable(NormalTexture
         Shader.cpp
         NormalTextureShader.cpp
         GouraudTextureShader.cpp
+        FlatTextureShader.cpp
         )
