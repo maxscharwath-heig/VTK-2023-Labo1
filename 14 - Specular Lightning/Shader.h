@@ -4,6 +4,7 @@
 #include "geometry.h"
 #include "model.h"
 #include "tgaimage.h"
+#include "Camera.h"
 
 struct Shader {
    Vec3f light;
@@ -17,17 +18,29 @@ struct Shader {
    virtual bool fragment(Vec3f bary, TGAColor& color) = 0;
 };
 
-struct ColorShaderBase {
+struct Culler {
+   bool backfaceCulling = false;
+   bool frontfaceCulling = false;
+   Vec3f camera;
+protected:
+   bool isNotCulled(Vec3f normal) const;
+};
+
+struct TextureCoordinates {
+   void vertex(Model* model, size_t face, size_t vert);
+protected:
+   TGAColor getValue(TGAImage* im, Vec3f bary);
+   Vec3f varying_uv[3];
+};
+
+struct MonoColor {
    TGAColor color = TGAColor(255, 255, 255, 255);
    void fragment(TGAColor& color);
 };
 
-struct TextureShaderBase {
+struct TexturedColor : TextureCoordinates {
    TGAImage* texture = nullptr;
-   void vertex(Model* model, size_t face, size_t vert);
    void fragment(Vec3f bary, TGAColor& color);
-protected:
-   Vec3f varying_uv[3];
 };
 
 struct FlatShaderBase {
@@ -43,5 +56,7 @@ struct GouraudShaderBase {
 private:
    Vec3f varying_intensity;
 };
+
+void applyShade(TGAColor& color, float intensity);
 
 #endif //CPPRENDERER_SHADER_H

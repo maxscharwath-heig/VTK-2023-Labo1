@@ -53,6 +53,9 @@ int main() {
       normalTextureShader.projection = camera.projection();
       normalTextureShader.viewport = make_viewport(0, 0, viewW, viewH);
       normalTextureShader.light = {sin(angle), 0, cos(angle)};
+      normalTextureShader.camera = camera.direction();
+      normalTextureShader.backfaceCulling = true;
+      normalTextureShader.frontfaceCulling = false;
 
       for (size_t f = 0; f < size_t(model.nfaces()); ++f) {
          Vec3f screen[3];

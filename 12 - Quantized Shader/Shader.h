@@ -17,12 +17,12 @@ struct Shader {
    virtual bool fragment(Vec3f bary, TGAColor& color) = 0;
 };
 
-struct ColorShaderBase {
+struct MonoColor {
    TGAColor color = TGAColor(255, 255, 255, 255);
    void fragment(TGAColor& color);
 };
 
-struct TextureShaderBase {
+struct TexturedColor {
    TGAImage* texture = nullptr;
    void vertex(Model* model, size_t face, size_t vert);
    void fragment(Vec3f bary, TGAColor& color);

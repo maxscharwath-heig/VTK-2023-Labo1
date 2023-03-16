@@ -6,6 +6,6 @@ Vec3f FlatShader::vertex(size_t face, size_t vert) {
 }
 
 bool FlatShader::fragment(Vec3f bary, TGAColor &color) {
-   ColorShaderBase::fragment(color);
+   MonoColor::fragment(color);
    return FlatShaderBase::fragment(bary,color);
 }

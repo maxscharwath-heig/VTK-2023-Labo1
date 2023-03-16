@@ -1,7 +1,7 @@
 #include "QuantizedGouraudShader.h"
 
 bool QuantizedGouraudShader::fragment(Vec3f bary, TGAColor& color) {
-   ColorShaderBase::fragment(color);
+   MonoColor::fragment(color);
 
    float pixelIntensity = varying_intensity * bary;
    if (pixelIntensity < 0) return false;

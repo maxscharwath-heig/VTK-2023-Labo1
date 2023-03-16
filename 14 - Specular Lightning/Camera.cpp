@@ -4,6 +4,10 @@ float Camera::focalDistance() const {
    return (eye-center).norm();
 }
 
+Vec3f Camera::direction() const {
+   return (eye-center).normalize();
+}
+
 Matrix4x4 Camera::view() const {
    Matrix4x4 m = Matrix4x4::identity();
 

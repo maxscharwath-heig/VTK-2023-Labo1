@@ -6,6 +6,7 @@
 struct Camera {
    Vec3f eye, center, up;
    float focalDistance() const;
+   Vec3f direction() const;
    Matrix4x4 view() const;
    Matrix4x4 projection() const;
 };

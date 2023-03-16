@@ -1,12 +1,12 @@
 #include "NormalTextureShader.h"
 
 Vec3f NormalTextureShader::vertex(size_t face, size_t vert) {
-   TextureShaderBase::vertex(model, face, vert);
+   TexturedColor::vertex(model, face, vert);
    return Shader::vertex(face,vert);
 }
 
 bool NormalTextureShader::fragment(Vec3f bary, TGAColor &color) {
-   TextureShaderBase::fragment(bary, color);
+   TexturedColor::fragment(bary, color);
    Vec3f ptc = varying_uv[0] * bary.x + varying_uv[1] * bary.y + varying_uv[2] * bary.z;
    Vec2i pc(int(round(ptc.x * float(normals->get_width()))),int(round(ptc.y * float(normals->get_height()))));
    TGAColor normal = normals->get(pc.x, pc.y);
