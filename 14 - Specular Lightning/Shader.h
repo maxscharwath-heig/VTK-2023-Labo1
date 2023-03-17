@@ -43,18 +43,24 @@ struct TexturedColor : TextureCoordinates {
    void fragment(Vec3f bary, TGAColor& color);
 };
 
-struct FlatShaderBase {
+struct FlatNormals {
    void vertex(Model* model, Vec3f light, size_t face, size_t vert);
    bool fragment(Vec3f bary, TGAColor& color);
 private:
    float intensity;
 };
 
-struct GouraudShaderBase {
+struct GouraudNormals {
    void vertex(Model* model, Vec3f light, size_t face, size_t vert);
-   bool fragment(Vec3f bary, TGAColor& color);
+   void fragment(Vec3f bary, TGAColor& color);
 private:
    Vec3f varying_intensity;
+};
+
+struct TexturedNormals : TextureCoordinates {
+   TGAImage* normals;
+   Vec3f getNormal(Vec3f bary);
+   void fragment( Vec3f light, Vec3f bary, TGAColor& color);
 };
 
 void applyShade(TGAColor& color, float intensity);

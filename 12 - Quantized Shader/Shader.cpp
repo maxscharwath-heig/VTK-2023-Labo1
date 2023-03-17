@@ -23,7 +23,7 @@ void TexturedColor::fragment(Vec3f bary, TGAColor &color) {
 }
 
 #define World(vertIdx) model->vert(size_t(model->face(face)[(vertIdx)]))
-void FlatShaderBase::vertex(Model* model, Vec3f light, size_t face, size_t vert) {
+void FlatNormals::vertex(Model* model, Vec3f light, size_t face, size_t vert) {
    if(vert == 0) { // inutile de repeter le calcul pour vert != 0
       Vec3f n = (World(1)- World(0)) ^ (World(2) - World(0));
       n.normalize();
@@ -31,19 +31,19 @@ void FlatShaderBase::vertex(Model* model, Vec3f light, size_t face, size_t vert)
    }
 }
 
-bool FlatShaderBase::fragment([[maybe_unused]] Vec3f bary, TGAColor &color) {
+bool FlatNormals::fragment([[maybe_unused]] Vec3f bary, TGAColor &color) {
    if(intensity < 0) return false;
    for(int i = 0; i < 3; ++i)
       color.raw[i] = (unsigned char)(float(color.raw[i]) * intensity);
    return true;
 }
 
-void GouraudShaderBase::vertex(Model* model, Vec3f light, size_t face, size_t vert) {
+void GouraudNormals::vertex(Model* model, Vec3f light, size_t face, size_t vert) {
    Vec3f n = model->normal(size_t(model->face_normals(face)[vert]));
    varying_intensity.raw[vert] = n * light;
 }
 
-bool GouraudShaderBase::fragment(Vec3f bary, TGAColor& color) {
+bool GouraudNormals::fragment(Vec3f bary, TGAColor& color) {
    float pixelIntensity = varying_intensity * bary;
    if (pixelIntensity < 0) return false;
 
