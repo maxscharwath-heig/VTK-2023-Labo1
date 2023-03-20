@@ -57,12 +57,13 @@ int main() {
    normalTextureShader.texture = &texture;
    normalTextureShader.normals = &normals;
 
-   vector<Shader*> shaders = { &flatShader,
-                               &flatTextureShader,
-                               &gouraudShader,
-                               &gouraudTextureShader,
-                               &normalShader,
-                               &normalTextureShader };
+   vector<Shader*> shaders = {
+           &flatTextureShader,
+           &gouraudTextureShader,
+           &normalTextureShader,
+           &flatShader,
+           &gouraudShader,
+           &normalShader };
 
    int const imageW = 1500, imageH = 1000;
    int const gridX = 3, gridY = 2;
