@@ -5,9 +5,10 @@
 
 struct FlatTextureShader : public Shader,
         public TexturedColor,
-        public FlatNormals {
+        public FlatNormals,
+        public Culler {
    virtual Vec3f vertex(size_t face, size_t vert);
-   virtual bool fragment(Vec3f bary, TGAColor &color);
+   virtual bool fragment(Vec3f bary, TGAColor &color) const;
 };
 
 

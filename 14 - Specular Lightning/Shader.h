@@ -15,7 +15,7 @@ struct Shader {
 
    virtual ~Shader() = default;
    virtual Vec3f vertex(size_t face, size_t vert);
-   virtual bool fragment(Vec3f bary, TGAColor& color) = 0;
+   virtual bool fragment(Vec3f bary, TGAColor& color) const = 0;
 };
 
 struct Culler {
@@ -28,39 +28,47 @@ protected:
 
 struct TextureCoordinates {
    void vertex(Model* model, size_t face, size_t vert);
+   TGAColor getValue(TGAImage* im, Vec3f bary) const;
 protected:
-   TGAColor getValue(TGAImage* im, Vec3f bary);
    Vec3f varying_uv[3];
 };
 
 struct MonoColor {
    TGAColor color = TGAColor(255, 255, 255, 255);
-   void fragment(TGAColor& color);
+   void fragment(TGAColor& color) const;
 };
 
-struct TexturedColor : TextureCoordinates {
-   TGAImage* texture = nullptr;
-   void fragment(Vec3f bary, TGAColor& color);
+struct TexturedColor : public virtual TextureCoordinates {
+   TGAImage* textureImage = nullptr;
+   void fragment(Vec3f bary, TGAColor& color) const;
 };
 
 struct FlatNormals {
    void vertex(Model* model, Vec3f light, size_t face, size_t vert);
-   bool fragment(Vec3f bary, TGAColor& color);
+   Vec3f fragment(Vec3f bary, TGAColor& color) const; // returns normal
 private:
    float intensity;
+   Vec3f faceNormal;
 };
 
 struct GouraudNormals {
    void vertex(Model* model, Vec3f light, size_t face, size_t vert);
-   void fragment(Vec3f bary, TGAColor& color);
+   void fragment(Vec3f bary, TGAColor& color) const;
 private:
    Vec3f varying_intensity;
 };
 
-struct TexturedNormals : TextureCoordinates {
-   TGAImage* normals;
-   Vec3f getNormal(Vec3f bary);
-   void fragment( Vec3f light, Vec3f bary, TGAColor& color);
+struct PhongNormals {
+   void vertex(Model* model, size_t face, size_t vert);
+   Vec3f fragment(Vec3f light, Vec3f bary, TGAColor& color) const;
+   void specular(Vec3f light, Vec3f camera, Vec3f normal, float power, TGAColor& color) const;
+private:
+   Vec3f normals[3];
+};
+
+struct TexturedNormals : public virtual TextureCoordinates {
+   TGAImage* normalsImage;
+   Vec3f fragment( Vec3f light, Vec3f bary, TGAColor& color) const;
 };
 
 void applyShade(TGAColor& color, float intensity);

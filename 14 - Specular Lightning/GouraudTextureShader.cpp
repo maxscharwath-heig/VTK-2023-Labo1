@@ -6,7 +6,8 @@ Vec3f GouraudTextureShader::vertex(size_t face, size_t vert) {
    return Shader::vertex(face, vert);
 }
 
-bool GouraudTextureShader::fragment(Vec3f bary, TGAColor &color) {
+bool GouraudTextureShader::fragment(Vec3f bary, TGAColor &color) const {
    TexturedColor::fragment(bary, color);
-   return GouraudNormals::fragment(bary, color);
+   GouraudNormals::fragment(bary, color);
+   return true;
 }
