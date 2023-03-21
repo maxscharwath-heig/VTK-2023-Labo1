@@ -35,7 +35,7 @@ TGAColor TextureCoordinates::getValue(TGAImage* im, Vec3f bary) const {
 }
 
 void TexturedColor::fragment(Vec3f bary, TGAColor &color) const {
-   color = TextureCoordinates::getValue(texture, bary);
+   color = TextureCoordinates::getValue(textureImage, bary);
 }
 
 #define World(vertIdx) model->vert(size_t(model->face(face)[(vertIdx)]))
@@ -61,8 +61,26 @@ void GouraudNormals::fragment(Vec3f bary, TGAColor& color) const {
    applyShade(color, varying_intensity * bary);
 }
 
+void PhongNormals::vertex(Model* model, size_t face, size_t vert) {
+   normals[vert] = model->normal(size_t(model->face_normals(face)[vert]));
+}
+
+Vec3f PhongNormals::fragment(Vec3f light, Vec3f bary, TGAColor& color) const {
+   Vec3f n = normals[0] * bary.x + normals[1] * bary.y + normals[2] * bary.z;
+   applyShade(color,n * light);
+   return n;
+}
+
+void PhongNormals::specular(Vec3f light, Vec3f camera, Vec3f normal, float power, TGAColor& color) const {
+   Vec3f reflexion = normal * 2.f * (normal * light) - light;
+   reflexion.normalize();
+   float intensity = std::max<float>(0.f,camera * reflexion);
+   intensity = pow(intensity,power);
+   applyShade(color,intensity);
+}
+
 Vec3f TexturedNormals::fragment(Vec3f light, Vec3f bary, TGAColor& color) const {
-   TGAColor normal = TextureCoordinates::getValue(normals, bary);
+   TGAColor normal = TextureCoordinates::getValue(normalsImage, bary);
    auto n = Vec3f{ float(normal.raw[2]), float(normal.raw[1]), float(normal.raw[0]) }
             - Vec3f{127.5f,127.5f,127.5f};
    n.normalize();

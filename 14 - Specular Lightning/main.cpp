@@ -18,15 +18,15 @@ using namespace std;
 
 int main() {
 
-   string modelFileName = "../../../ocuisenaire-CPP-Renderer-2023/obj/african_head.obj";
+   string modelFileName = "../../obj/african_head.obj";
    Model model(modelFileName.c_str());
 
-   string textureFileName = "../../../ocuisenaire-CPP-Renderer-2023/obj/african_head_diffuse.tga";
+   string textureFileName = "../../african_head_diffuse.tga";
    TGAImage texture;
    texture.read_tga_file(textureFileName.c_str());
    texture.flip_vertically();
 
-   string normalsFileName = "../../../ocuisenaire-CPP-Renderer-2023/obj/african_head_nm.tga";
+   string normalsFileName = "../../african_head_nm.tga";
    TGAImage normals;
    normals.read_tga_file(normalsFileName.c_str());
    normals.flip_vertically();
@@ -34,11 +34,11 @@ int main() {
    Camera camera{ .eye = {1,1,2}, .center = {0,0,0}, .up = {0,1,0} };
 
    NormalTextureShader normalTextureShader;
-   normalTextureShader.texture = &texture;
-   normalTextureShader.normals = &normals;
+   normalTextureShader.textureImage = &texture;
+   normalTextureShader.normalsImage = &normals;
 
    GouraudTextureShader gouraudTextureShader;
-   gouraudTextureShader.texture = &texture;
+   gouraudTextureShader.textureImage = &texture;
 
    vector<Shader*> shaders = { &gouraudTextureShader, &normalTextureShader };
 

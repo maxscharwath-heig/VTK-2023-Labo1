@@ -39,7 +39,7 @@ struct MonoColor {
 };
 
 struct TexturedColor : public virtual TextureCoordinates {
-   TGAImage* texture = nullptr;
+   TGAImage* textureImage = nullptr;
    void fragment(Vec3f bary, TGAColor& color) const;
 };
 
@@ -58,8 +58,16 @@ private:
    Vec3f varying_intensity;
 };
 
+struct PhongNormals {
+   void vertex(Model* model, size_t face, size_t vert);
+   Vec3f fragment(Vec3f light, Vec3f bary, TGAColor& color) const;
+   void specular(Vec3f light, Vec3f camera, Vec3f normal, float power, TGAColor& color) const;
+private:
+   Vec3f normals[3];
+};
+
 struct TexturedNormals : public virtual TextureCoordinates {
-   TGAImage* normals;
+   TGAImage* normalsImage;
    Vec3f fragment( Vec3f light, Vec3f bary, TGAColor& color) const;
 };
 
