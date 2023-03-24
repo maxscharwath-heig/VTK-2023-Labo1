@@ -32,12 +32,10 @@ int main() {
    string textureFileName = "../../obj/african_head_diffuse.tga";
    TGAImage texture;
    texture.read_tga_file(textureFileName.c_str());
-   texture.flip_vertically();
 
    string normalsFileName = "../../obj/african_head_nm.tga";
    TGAImage normals;
    normals.read_tga_file(normalsFileName.c_str());
-   normals.flip_vertically();
 
    Camera camera{ .eye = {1,1,2}, .center = {0,0,0}, .up = {0,1,0} };
 
@@ -140,7 +138,6 @@ int main() {
       }
    }
 
-   image.flip_vertically();
    string filename = "allShaders.tga";
    image.write_tga_file(filename.data());
 }
