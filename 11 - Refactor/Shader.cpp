@@ -6,15 +6,15 @@ Vec3f Shader::vertex(size_t face, size_t vert) {
    return screen;
 }
 
-void ColorShaderBase::fragment(TGAColor& color) {
+void MonoColor::fragment(TGAColor& color) {
    color = this->color;
 }
 
-void TextureShaderBase::vertex(Model* model, size_t face, size_t vert) {
+void TexturedColor::vertex(Model* model, size_t face, size_t vert) {
    varying_uv[vert] = model->texture(size_t(model->face_texts(face)[vert]));
 }
 
-void TextureShaderBase::fragment(Vec3f bary, TGAColor &color) {
+void TexturedColor::fragment(Vec3f bary, TGAColor &color) {
    Vec3f ptc = varying_uv[0] * bary.x + varying_uv[1] * bary.y + varying_uv[2] * bary.z;
    Vec2i pc(
            int(round(ptc.x * float(texture->get_width()))),

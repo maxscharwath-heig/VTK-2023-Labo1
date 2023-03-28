@@ -5,7 +5,7 @@
 
 struct GouraudTextureShader
         : public Shader,
-          public TextureShaderBase,
+          public TexturedColor,
           public GouraudShaderBase {
    virtual Vec3f vertex(size_t face, size_t vert);
 
