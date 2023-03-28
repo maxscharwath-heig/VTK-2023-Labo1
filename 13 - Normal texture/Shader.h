@@ -30,14 +30,14 @@ protected:
    Vec3f varying_uv[3];
 };
 
-struct FlatShaderBase {
+struct FlatNormals {
    void vertex(Model* model, Vec3f light, size_t face, size_t vert);
    bool fragment(Vec3f bary, TGAColor& color);
 private:
    float intensity;
 };
 
-struct GouraudShaderBase {
+struct GouraudNormals {
    void vertex(Model* model, Vec3f light, size_t face, size_t vert);
    bool fragment(Vec3f bary, TGAColor& color);
 private:

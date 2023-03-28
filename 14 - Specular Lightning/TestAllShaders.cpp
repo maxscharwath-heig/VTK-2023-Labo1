@@ -17,6 +17,10 @@
 #include "GouraudTextureShader.h"
 #include "NormalShader.h"
 #include "NormalTextureShader.h"
+#include "PhongShader.h"
+#include "PhongTextureShader.h"
+#include "PhongNormalShader.h"
+#include "PhongNormalTextureShader.h"
 
 using namespace std;
 
@@ -41,31 +45,74 @@ int main() {
    flatShader.color = TGAColor(255,128,128,255);
 
    FlatTextureShader flatTextureShader;
-   flatTextureShader.texture = &texture;
+   flatTextureShader.textureImage = &texture;
 
    GouraudShader gouraudShader;
    gouraudShader.color = TGAColor(128,255,128,255);
 
    GouraudTextureShader gouraudTextureShader;
-   gouraudTextureShader.texture = &texture;
+   gouraudTextureShader.textureImage = &texture;
 
    NormalShader normalShader;
    normalShader.color =  TGAColor(128,128,255,255);
-   normalShader.normals = &normals;
+   normalShader.normalsImage = &normals;
 
    NormalTextureShader normalTextureShader;
-   normalTextureShader.texture = &texture;
-   normalTextureShader.normals = &normals;
+   normalTextureShader.textureImage = &texture;
+   normalTextureShader.normalsImage = &normals;
 
-   vector<Shader*> shaders = { &flatShader,
-                               &flatTextureShader,
-                               &gouraudShader,
-                               &gouraudTextureShader,
-                               &normalShader,
-                               &normalTextureShader };
+   PhongShader phongShader;
+   phongShader.ambientColor = TGAColor(255,255,255,255);
+   phongShader.diffuseColor = TGAColor(255,128,255,255);
+   phongShader.specularColor = TGAColor(255,255,255,255);
+   phongShader.ambientWeight = 0.1f;
+   phongShader.diffuseWeight = 1.f;
+   phongShader.specularWeight = 0.5f;
+   phongShader.specularPower = 10.f;
+   phongShader.camera = camera.direction();
 
-   int const imageW = 1500, imageH = 1000;
-   int const gridX = 3, gridY = 2;
+   PhongTextureShader phongTextureShader;
+   phongTextureShader.textureImage = &texture;
+   phongTextureShader.ambientWeight = 0.1f;
+   phongTextureShader.diffuseWeight = 1.f;
+   phongTextureShader.specularWeight = 1.f;
+   phongTextureShader.specularPower = 10.f;
+   phongTextureShader.camera = camera.direction();
+
+   PhongNormalShader phongNormalShader;
+   phongNormalShader.normalsImage = &normals;
+   phongNormalShader.ambientColor = TGAColor(255,255,255,255);
+   phongNormalShader.diffuseColor = TGAColor(255,128,255,255);
+   phongNormalShader.specularColor = TGAColor(255,255,255,255);
+   phongNormalShader.ambientWeight = 0.1f;
+   phongNormalShader.diffuseWeight = 1.f;
+   phongNormalShader.specularWeight = 0.5f;
+   phongNormalShader.specularPower = 10.f;
+   phongNormalShader.camera = camera.direction();
+
+   PhongNormalTextureShader phongNormalTextureShader;
+   phongNormalTextureShader.normalsImage = &normals;
+   phongNormalTextureShader.textureImage = &texture;
+   phongNormalTextureShader.ambientWeight = 0.1f;
+   phongNormalTextureShader.diffuseWeight = 1.f;
+   phongNormalTextureShader.specularWeight = 1.f;
+   phongNormalTextureShader.specularPower = 10.f;
+   phongNormalTextureShader.camera = camera.direction();
+
+   vector<Shader*> shaders = {
+           &flatTextureShader,
+           &gouraudTextureShader,
+           &normalTextureShader,
+           &phongTextureShader,
+           &phongNormalTextureShader,
+           &flatShader,
+           &gouraudShader,
+           &normalShader,
+           &phongShader,
+           &phongNormalShader};
+
+   int const imageW = 2500, imageH = 1000;
+   int const gridX = 5, gridY = 2;
    int const viewW = imageW / gridX, viewH = imageH / gridY;
    TGAImage image(imageW, imageH, TGAImage::RGB);
    vector<float> zbuffer(imageW * imageH, std::numeric_limits<float>::lowest());
@@ -81,7 +128,8 @@ int main() {
       shader->view = camera.view();
       shader->projection = camera.projection();
       shader->viewport = make_viewport(x * viewW, y * viewH, viewW, viewH);
-      shader->light = {0, 0, 1};
+      shader->light = {0,0,1};
+      shader->light.normalize();
 
       for (size_t f = 0; f < size_t(model.nfaces()); ++f) {
          Vec3f screen[3];

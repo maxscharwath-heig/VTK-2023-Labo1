@@ -20,6 +20,11 @@ add_executable(TestAllShaders
         FlatShader.cpp
         GouraudShader.cpp
         NormalShader.cpp
+        PhongShader.cpp
+        PhongTextureShader.cpp
+        PhongNormalShader.cpp
+        PhongNormalTextureShader.cpp
+        TGAColor.cpp
         )
 
 add_executable(RotatingLight
@@ -29,20 +34,18 @@ add_executable(RotatingLight
         Triangle.cpp
         tgaimage.cpp
         Shader.cpp
-        NormalTextureShader.cpp
-        GouraudTextureShader.cpp
-        FlatTextureShader.cpp
-        rotatingLight.cpp)
+        PhongShader.cpp
+        PhongNormalTextureShader.cpp
+        rotatingLight.cpp
+        TGAColor.cpp)
 
-add_executable(SpecularLightning
-        main.cpp
+add_executable(SpecularPower
         model.cpp
         Camera.cpp
         Viewport.cpp
         Triangle.cpp
         tgaimage.cpp
         Shader.cpp
-        NormalTextureShader.cpp
-        GouraudTextureShader.cpp
-        FlatTextureShader.cpp
-        )
+        PhongShader.cpp
+        specularPower.cpp
+        TGAColor.cpp)
