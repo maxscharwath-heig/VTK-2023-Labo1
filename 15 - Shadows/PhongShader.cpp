@@ -7,7 +7,6 @@ Vec3f PhongShader::vertex(size_t face, size_t vert) {
 }
 
 bool PhongShader::fragment(Vec3f bary, TGAColor &color) const {
-
    TGAColor dColor = diffuseColor;
    auto n = PhongNormals::fragment(light, bary, dColor);
 

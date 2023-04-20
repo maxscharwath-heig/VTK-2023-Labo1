@@ -6,7 +6,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-gnu-anonymous-struct -Wno-nested-an
 
 include_directories(.)
 
-add_executable(TestAllShaders
+add_executable(TestAllShaders14
         TestAllShaders.cpp
         model.cpp
         Camera.cpp

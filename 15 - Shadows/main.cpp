@@ -21,12 +21,12 @@ int main() {
    string modelFileName = "../../obj/african_head.obj";
    Model model(modelFileName.c_str());
 
-   string textureFileName = "../../african_head_diffuse.tga";
+   string textureFileName = "../../obj/african_head_diffuse.tga";
    TGAImage texture;
    texture.read_tga_file(textureFileName.c_str());
    texture.flip_vertically();
 
-   string normalsFileName = "../../african_head_nm.tga";
+   string normalsFileName = "../../obj/african_head_nm.tga";
    TGAImage normals;
    normals.read_tga_file(normalsFileName.c_str());
    normals.flip_vertically();
