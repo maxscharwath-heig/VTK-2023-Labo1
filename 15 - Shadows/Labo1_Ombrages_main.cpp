@@ -41,6 +41,10 @@ vector<float> computeZbufferShader(ShadePhongShader *pShader, const Vec3f &light
     return zbuffer;
 }
 
+/**
+ * VTK - Labo 1 - Ombrages
+ * @authors Nicolas Crausaz & Maxime Scharwath
+ */
 int main() {
 
     string modelFileName = "../../obj/10_Capricorn.obj";

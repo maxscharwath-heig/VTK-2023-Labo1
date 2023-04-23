@@ -27,8 +27,8 @@ set(COMMON_CPP_FILES
         ShadePhongShader.cpp
         )
 
-add_executable(TestAllShaders
-        TestAllShaders.cpp
+add_executable(Labo1_Ombrages_main
+        Labo1_Ombrages_main.cpp
         ${COMMON_CPP_FILES}
         )
 

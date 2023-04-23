@@ -13,7 +13,7 @@ bool ShadePhongShader::fragment(Vec3f bary, TGAColor &color) const {
     int index = int(shadow.x) + int(shadow.y) * shadowMapWidth;
 
     TGAColor dColor = diffuseColor;
-    auto n = PhongNormals::fragment(light, bary, dColor);
+    Vec3f n = PhongNormals::fragment(light, bary, dColor);
 
     TGAColor sColor = specularColor;
     PhongNormals::specular(light, camera, n, specularPower, sColor);
