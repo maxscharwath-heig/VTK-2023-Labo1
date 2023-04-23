@@ -3,9 +3,8 @@
 
 Vec3f ShadePhongShader::vertex(size_t face, size_t vert) {
     Vec3f world = model->vert(size_t(model->face(face)[vert]));
-    shadowCoords[vert] =  viewport * transMatrix * VecH(world);
-    PhongNormals::vertex(model, face, vert);
-    return  Shader::vertex(face, vert);
+    shadowCoords[vert] = viewport * transMatrix * VecH(world);
+    return PhongShader::vertex(face, vert);
 }
 
 bool ShadePhongShader::fragment(Vec3f bary, TGAColor &color) const {

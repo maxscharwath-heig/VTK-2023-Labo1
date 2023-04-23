@@ -1,15 +1,9 @@
 #ifndef CPPRENDERER_SHADEPHONGSHADER_H
 #define CPPRENDERER_SHADEPHONGSHADER_H
 
-#include "Shader.h"
+#include "PhongShader.h"
 
-struct ShadePhongShader
-        : public Shader,
-          public Culler,
-          public PhongNormals {
-    TGAColor ambientColor, diffuseColor, specularColor;
-    float ambientWeight = 0.3f, diffuseWeight = 0.7f, specularWeight = 0.f;
-    float specularPower = 10.f;
+struct ShadePhongShader : public PhongShader {
     Matrix4x4 transMatrix;
     std::vector<float> zbufferShade;
     Vec3f shadowCoords[3];
