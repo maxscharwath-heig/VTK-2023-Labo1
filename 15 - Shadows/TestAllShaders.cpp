@@ -53,31 +53,32 @@ int main() {
 
     ShadePhongShader shadePhongShader;
     shadePhongShader.ambientColor = TGAColor(255, 255, 255, 255);
-    shadePhongShader.diffuseColor = TGAColor(255, 128, 255, 255);
+    shadePhongShader.diffuseColor = TGAColor(255, 128, 128, 255);
     shadePhongShader.specularColor = TGAColor(255, 255, 255, 255);
-    shadePhongShader.ambientWeight = 0.1f;
-    shadePhongShader.diffuseWeight = 1.f;
+    shadePhongShader.ambientWeight = 0.2f;
+    shadePhongShader.diffuseWeight = 0.8f;
     shadePhongShader.specularWeight = 0.5f;
     shadePhongShader.specularPower = 10.f;
     shadePhongShader.camera = camera.direction();
 
     FlatShader flatShader;
 
-    int const imageW = 800, imageH = 800;
+    int const imageW = 1000, imageH = 1000;
     TGAImage image(imageW, imageH, TGAImage::RGB);
     vector<float> zbuffer(imageW * imageH, std::numeric_limits<float>::lowest());
 
-    auto shader = &shadePhongShader;
+    ShadePhongShader *shader = &shadePhongShader;
     shader->model = &model;
     shader->view = camera.view();
     shader->projection = camera.projection();
-    shader->viewport = make_viewport(0, 0, imageW, imageH);
+    shader->viewport = make_viewport(0, 0, imageW, imageH, 0.7);
     shader->light = light;
     shader->light.normalize();
-    shader->transMatrix =   lightCamera.view() * lightCamera.projection();
+    shader->transMatrix = lightCamera.view() * lightCamera.projection();
     shader->shadowMapWidth = imageW;
     shader->shadowMapHeight = imageH;
     shader->shadowIntensity = 0.5f;
+    shader->specularShadowIntensity = 0.0f;
     shader->zbufferShade = computeZbufferShader(shader, light);
 
     render(shader, zbuffer, image);

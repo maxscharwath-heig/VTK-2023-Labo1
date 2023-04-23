@@ -15,6 +15,7 @@ struct ShadePhongShader
     Vec3f shadowCoords[3];
     int shadowMapWidth, shadowMapHeight;
     float shadowIntensity = 0.5f;
+    float specularShadowIntensity = 0.0f;
 
     Vec3f vertex(size_t face, size_t vert) override;
 

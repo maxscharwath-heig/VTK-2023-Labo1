@@ -24,14 +24,15 @@ bool ShadePhongShader::fragment(Vec3f bary, TGAColor &color) const {
     TGAColor specularComponent = sColor * specularWeight;
 
     float shadowFactor = 1.0f;
+    float specularFactor = 1.0f;
     if (index >= 0 && index < shadowMapWidth * shadowMapHeight) {
         float z = zbufferShade[index];
         float bias = 10;
         if (z > shadow.z + bias) {
             shadowFactor = shadowIntensity;
+            specularFactor = specularShadowIntensity;
         }
     }
-    color = ambientComponent + diffuseComponent * shadowFactor + specularComponent * shadowFactor;
-
+    color = ambientComponent + diffuseComponent * shadowFactor + specularComponent * specularFactor;
     return true;
 }
