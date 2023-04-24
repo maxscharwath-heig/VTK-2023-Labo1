@@ -1,7 +1,3 @@
-//
-// Created by Maxime Scharwath on 24.04.23.
-//
-
 #ifndef CPPRENDERER_SHADEPHONGTEXTURESHADER_H
 #define CPPRENDERER_SHADEPHONGTEXTURESHADER_H
 
