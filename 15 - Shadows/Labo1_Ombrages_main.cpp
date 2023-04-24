@@ -10,7 +10,7 @@
 #include "Triangle.h"
 
 #include "ShadePhongShader.h"
-#include "ShadeTexturePhongShader.h"
+#include "PhongShader.h"
 #include "FlatShader.h"
 
 using namespace std;
@@ -64,27 +64,47 @@ int main() {
     shadePhongShader.specularPower = 10.f;
     shadePhongShader.camera = camera.direction();
 
+    PhongShader phongShader;
+    phongShader.ambientColor = TGAColor(255, 255, 255, 255);
+    phongShader.diffuseColor = TGAColor(255, 128, 128, 255);
+    phongShader.specularColor = TGAColor(255, 255, 255, 255);
+    phongShader.ambientWeight = 0.2f;
+    phongShader.diffuseWeight = 0.8f;
+    phongShader.specularWeight = 0.5f;
+    phongShader.specularPower = 10.f;
+    phongShader.camera = camera.direction();
+
     FlatShader flatShader;
 
-    int const imageW = 1000, imageH = 1000;
+    int const imageW = 2000;
+    int const imageH = 1000;
     TGAImage image(imageW, imageH, TGAImage::RGB);
     vector<float> zbuffer(imageW * imageH, std::numeric_limits<float>::lowest());
 
-    ShadePhongShader *shader = &shadePhongShader;
-    shader->model = &model;
-    shader->view = camera.view();
-    shader->projection = camera.projection();
-    shader->viewport = make_viewport(0, 0, imageW, imageH, 0.7);
-    shader->light = light;
-    shader->light.normalize();
-    shader->transMatrix = lightCamera.view() * lightCamera.projection();
-    shader->shadowMapWidth = imageW;
-    shader->shadowMapHeight = imageH;
-    shader->shadowIntensity = 0.5f;
-    shader->specularShadowIntensity = 0.0f;
-    shader->zbufferShade = computeZbufferShader(shader, light, imageW, imageH);
+    // Create a vector of shader pointers
+    vector<Shader *> shaders = {&shadePhongShader, &phongShader};
 
-    render(shader, zbuffer, image);
+    // Render each shader in the desired position
+    for (size_t i = 0; i < shaders.size(); ++i) {
+        fill(zbuffer.begin(),zbuffer.end(),std::numeric_limits<float>::lowest());
+        Shader *currentShader = shaders[i];
+        currentShader->model = &model;
+        currentShader->view = camera.view();
+        currentShader->projection = camera.projection();
+        currentShader->viewport = make_viewport(imageW / 2 * i, 0, imageW / 2, imageH, 0.5);
+        currentShader->light = light;
+        currentShader->light.normalize();
+        if(currentShader == &shadePhongShader) {
+            auto *shadedShader = (ShadePhongShader *) currentShader;
+            shadedShader->transMatrix = lightCamera.view() * lightCamera.projection();
+            shadedShader->shadowMapWidth = imageW;
+            shadedShader->shadowMapHeight = imageH;
+            shadedShader->shadowIntensity = 0.5f;
+            shadedShader->specularShadowIntensity = 0.0f;
+            shadedShader->zbufferShade = computeZbufferShader(shadedShader, light, imageW, imageH);
+        }
+        render(currentShader, zbuffer, image);
+    }
 
     string filename = "result.tga";
     image.write_tga_file(filename.data());

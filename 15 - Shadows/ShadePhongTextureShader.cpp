@@ -1,14 +1,14 @@
-#include "ShadeTexturePhongShader.h"
+#include "ShadePhongTextureShader.h"
 #include "TGAColor.h"
 
-Vec3f ShadeTexturePhongShader::vertex(size_t face, size_t vert) {
+Vec3f ShadePhongTextureShader::vertex(size_t face, size_t vert) {
     PhongNormals::vertex(model, face, vert);
     TexturedColor::vertex(model, face, vert);
     Shading::vertex(model, viewport, face, vert);
     return Shader::vertex(face, vert);
 }
 
-bool ShadeTexturePhongShader::fragment(Vec3f bary, TGAColor &color) const {
+bool ShadePhongTextureShader::fragment(Vec3f bary, TGAColor &color) const {
     TexturedColor::fragment(bary,color);
 
     TGAColor dColor = color;

@@ -2,12 +2,12 @@
 // Created by Maxime Scharwath on 24.04.23.
 //
 
-#ifndef CPPRENDERER_SHADETEXTUREPHONGSHADER_H
-#define CPPRENDERER_SHADETEXTUREPHONGSHADER_H
+#ifndef CPPRENDERER_SHADEPHONGTEXTURESHADER_H
+#define CPPRENDERER_SHADEPHONGTEXTURESHADER_H
 
 #include "Shader.h"
 
-struct ShadeTexturePhongShader
+struct ShadePhongTextureShader
         : public Shader,
           public TexturedColor,
           public Culler,
@@ -20,4 +20,4 @@ struct ShadeTexturePhongShader
 };
 
 
-#endif //CPPRENDERER_SHADETEXTUREPHONGSHADER_H
+#endif //CPPRENDERER_SHADEPHONGTEXTURESHADER_H
