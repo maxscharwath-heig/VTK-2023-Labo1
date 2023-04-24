@@ -71,6 +71,20 @@ struct TexturedNormals : public virtual TextureCoordinates {
    Vec3f fragment( Vec3f light, Vec3f bary, TGAColor& color) const;
 };
 
+struct Shading {
+    void vertex(Model* model, Matrix4x4 viewport, size_t face, size_t vert);
+    Matrix4x4 transMatrix;
+    std::vector<float> zbufferShade;
+    int shadowMapWidth;
+    int shadowMapHeight;
+    float shadowIntensity = 0.5f;
+    float specularShadowIntensity = 0.0f;
+protected:
+    void computeShade(Vec3f bary, float &shadowFactor, float &specularFactor) const;
+private:
+    Vec3f varying_shadowCoords[3];
+};
+
 void applyShade(TGAColor& color, float intensity);
 
 #endif //CPPRENDERER_SHADER_H

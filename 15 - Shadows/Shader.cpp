@@ -87,3 +87,25 @@ Vec3f TexturedNormals::fragment(Vec3f light, Vec3f bary, TGAColor& color) const 
    applyShade(color, n * light);
    return n;
 }
+
+void Shading::vertex(Model* model, Matrix4x4 viewport, size_t face, size_t vert) {
+    Vec3f world = model->vert(size_t(model->face(face)[vert]));
+    varying_shadowCoords[vert] =  viewport * transMatrix * VecH(world);
+}
+
+void Shading::computeShade(Vec3f bary, float &shadowFactor, float &specularFactor) const {
+    Vec3f shadow = varying_shadowCoords[0] * bary.x + varying_shadowCoords[1] * bary.y + varying_shadowCoords[2] * bary.z;
+
+    int index = int(shadow.x) + int(shadow.y) * shadowMapWidth;
+
+    shadowFactor = 1.0f;
+    specularFactor = 1.0f;
+    if (index >= 0 && index < shadowMapWidth * shadowMapHeight) {
+        float z = zbufferShade[index];
+        float bias = 10;
+        if (z > shadow.z + bias) {
+            shadowFactor = shadowIntensity;
+            specularFactor = specularShadowIntensity;
+        }
+    }
+}

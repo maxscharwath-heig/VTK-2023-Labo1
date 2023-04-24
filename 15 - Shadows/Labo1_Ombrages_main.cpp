@@ -10,6 +10,7 @@
 #include "Triangle.h"
 
 #include "ShadePhongShader.h"
+#include "ShadeTexturePhongShader.h"
 #include "FlatShader.h"
 
 using namespace std;
@@ -24,10 +25,8 @@ void render(Shader *shader, vector<float> &zbuffer, TGAImage &image) {
     }
 }
 
-vector<float> computeZbufferShader(ShadePhongShader *pShader, const Vec3f &light) {
+vector<float> computeZbufferShader(Shader *pShader, const Vec3f &light, int shadowMapWidth, int shadowMapHeight) {
     Camera camera{.eye = light, .center = {0, 0, 0}, .up = {0, 1, 0}};
-    int shadowMapWidth = pShader->shadowMapWidth;
-    int shadowMapHeight = pShader->shadowMapHeight;
     TGAImage image(shadowMapWidth, shadowMapHeight, TGAImage::RGB);
     vector<float> zbuffer(shadowMapWidth * shadowMapHeight, std::numeric_limits<float>::lowest());
     FlatShader shader;
@@ -83,7 +82,7 @@ int main() {
     shader->shadowMapHeight = imageH;
     shader->shadowIntensity = 0.5f;
     shader->specularShadowIntensity = 0.0f;
-    shader->zbufferShade = computeZbufferShader(shader, light);
+    shader->zbufferShade = computeZbufferShader(shader, light, imageW, imageH);
 
     render(shader, zbuffer, image);
 

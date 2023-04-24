@@ -30,7 +30,7 @@ set(COMMON_CPP_FILES
 add_executable(Labo1_Ombrages_main
         Labo1_Ombrages_main.cpp
         ${COMMON_CPP_FILES}
-        )
+        ShadeTexturePhongShader.cpp ShadeTexturePhongShader.h)
 
 add_executable(OneShader
         OneShader.cpp
