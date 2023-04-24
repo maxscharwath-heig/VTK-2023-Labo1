@@ -25,12 +25,16 @@ set(COMMON_CPP_FILES
         PhongNormalTextureShader.cpp
         TGAColor.cpp
         ShadePhongShader.cpp
+        ShadeTexturePhongShader.cpp
         )
 
 add_executable(Labo1_Ombrages_main
         Labo1_Ombrages_main.cpp
-        ${COMMON_CPP_FILES}
-        ShadeTexturePhongShader.cpp ShadeTexturePhongShader.h)
+        ${COMMON_CPP_FILES})
+
+add_executable(Labo1_Ombrages_main_textured
+        Labo1_Ombrages_main_textured.cpp
+        ${COMMON_CPP_FILES})
 
 add_executable(OneShader
         OneShader.cpp
